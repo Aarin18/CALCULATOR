@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="2style.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <input type="text" id="display" readonly>
+        </div>
+        <div class="buttons">
+            <button class="btn clear">AC</button>
+            <button class="btn operator">+/-</button>
+            <button class="btn operator">%</button>
+            <button class="btn operator">/</button>
+
+            <button class="btn number">7</button>
+            <button class="btn number">8</button>
+            <button class="btn number">9</button>
+            <button class="btn operator">*</button>
+
+            <button class="btn number">4</button>
+            <button class="btn number">5</button>
+            <button class="btn number">6</button>
+            <button class="btn operator">-</button>
+
+            <button class="btn number">1</button>
+            <button class="btn number">2</button>
+            <button class="btn number">3</button>
+            <button class="btn operator">+</button>
+
+            <button class="btn number zero">0</button>
+            <button class="btn decimal">.</button>
+            <button class="btn equal">=</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '';
+        let operator = '';
+        let previousInput = '';
+
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.textContent;
+
+                if (button.classList.contains('number') || button.classList.contains('decimal')) {
+                    currentInput += value;
+                    display.value = currentInput;
+                } else if (button.classList.contains('operator')) {
+                    if (value === '+/-') {
+                        if (currentInput !== '') {
+                            currentInput = (parseFloat(currentInput) * -1).toString();
+                            display.value = currentInput;
+                        }
+                    } else if (value === '%') {
+                        if (currentInput !== '') {
+                            currentInput = (parseFloat(currentInput) / 100).toString();
+                            display.value = currentInput;
+                        }
+                    } else {
+                        if (currentInput !== '') {
+                            if (previousInput !== '' && operator !== '') {
+                                calculate();
+                            }
+                            operator = value;
+                            previousInput = currentInput;
+                            currentInput = '';
+                        }
+                    }
+                } else if (button.classList.contains('equal')) {
+                    if (currentInput !== '' && previousInput !== '' && operator !== '') {
+                        calculate();
+                        operator = '';
+                    }
+                } else if (button.classList.contains('clear')) {
+                    currentInput = '';
+                    previousInput = '';
+                    operator = '';
+                    display.value = '';
+                }
+            });
+        });
+
+        function calculate() {
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+
+            switch (operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                case '%':
+                    result = prev * (current / 100);
+                    break;
+                default:
+                    return;
+            }
+
+            currentInput = result.toString();
+            display.value = currentInput;
+            previousInput = '';
+        }
+    </script>
+</body>
+</html>
